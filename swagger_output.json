@@ -14,28 +14,12 @@
   "consumes": [],
   "produces": [],
   "paths": {
-    "/users/{id}": {
+    "/api/v1/health-check": {
       "get": {
         "tags": [],
         "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "filtro",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "404": {
-            "description": "Not Found"
-          }
-        }
+        "parameters": [],
+        "responses": {}
       }
     }
   },
