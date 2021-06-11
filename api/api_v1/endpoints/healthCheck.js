@@ -1,8 +1,9 @@
-const healthCheck = (req, res, next) => {
-  res.send(200).json({
-    status: "success",
-    message: "ok",
+const catchAsync = require("../../../utils/catchAsync");
+
+const healthCheck = catchAsync(async (req, res, next) => {
+  res.status(200).json({
+    message: "OK",
   });
-};
+});
 
 module.exports = healthCheck;
