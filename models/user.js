@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const uuid = require("uuid");
+const bcrypt = require("bcrypt");
 
 const UserSchema = new mongoose.Schema({
   userName: {
@@ -10,6 +11,7 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Please provide password."],
+    select: false,
   },
   confirmPassword: {
     type: String,
@@ -27,6 +29,15 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     default: uuid.v4,
   },
+});
+
+UserSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) next();
+
+  this.password = await bcrypt.hash(this.password, 12);
+  this.confirmPassword = undefined;
+
+  next();
 });
 
 const User = mongoose.model("User", UserSchema);
