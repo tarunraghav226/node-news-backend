@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 const uuid = require("uuid");
 
 const PostSchema = new mongoose.Schema({
+  owner: {
+    type: String,
+    ref: "User",
+    required: [true, "Post owner is required"],
+  },
   title: {
     type: String,
     required: [true, "Title is requried"],
@@ -22,6 +27,10 @@ const PostSchema = new mongoose.Schema({
   coverImageURL: {
     type: String,
     default: null,
+  },
+  is_deleted: {
+    type: Boolean,
+    default: false,
   },
 });
 
