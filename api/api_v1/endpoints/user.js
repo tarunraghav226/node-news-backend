@@ -36,7 +36,7 @@ const userLogin = catchAsync(async (req, res, next) => {
   if (!user || !user.correctPassword(password, user.password))
     next(new AppError("Username or password is incorrect", 400));
 
-  const accessToken = signToken(user.user_id);
+  const accessToken = signToken(user.userID);
 
   res.status(200).json({
     status: "success",
