@@ -53,7 +53,15 @@ const updatePost = catchAsync(async (req, res, next) => {
   });
 });
 
-postRouter.route("/").post(protect, createPost).get(getPosts);
+const deletePost = catchAsync(async (req, res, next) => {
+  const { postID } = req.params;
+  await Post.findOneAndUpdate({ postID }, { is_deleted: true });
+  res.status(200).json({
+    message: "Post deleted",
+  });
+});
 
-postRouter.route("/:postID").get(getPost).put(updatePost);
+postRouter.route("/").post(protect, createPost).get(getPosts);
+postRouter.route("/:postID").get(getPost).put(updatePost).delete(deletePost);
+
 module.exports = postRouter;
