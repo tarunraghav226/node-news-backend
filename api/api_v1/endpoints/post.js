@@ -26,6 +26,13 @@ const getPosts = catchAsync(async (req, res, next) => {
   });
 });
 
+const getPost = catchAsync(async (req, res, next) => {
+  const { postID } = req.params;
+  const post = await Post.findOne({ postID });
+  res.status(200).json({ post });
+});
+
 postRouter.route("/").post(protect, createPost).get(getPosts);
 
+postRouter.route("/:postID").get(getPost);
 module.exports = postRouter;
