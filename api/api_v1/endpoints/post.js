@@ -19,6 +19,13 @@ const createPost = catchAsync(async (req, res, next) => {
   });
 });
 
-postRouter.route("/").post(protect, createPost);
+const getPosts = catchAsync(async (req, res, next) => {
+  const posts = await Post.find();
+  res.status(200).json({
+    posts: posts,
+  });
+});
+
+postRouter.route("/").post(protect, createPost).get(getPosts);
 
 module.exports = postRouter;
