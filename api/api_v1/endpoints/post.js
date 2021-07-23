@@ -32,7 +32,28 @@ const getPost = catchAsync(async (req, res, next) => {
   res.status(200).json({ post });
 });
 
+const updatePost = catchAsync(async (req, res, next) => {
+  const { postID } = req.params;
+  await Post.findOneAndUpdate(
+    { postID },
+    {
+      title: req.body.title,
+      summary: req.body.summary,
+      content: req.body.content,
+      coverImageURL: req.body.coverImageURL,
+    }
+  );
+  res.status(200).json({
+    post: {
+      title: req.body.title,
+      summary: req.body.summary,
+      content: req.body.content,
+      coverImageURL: req.body.coverImageURL,
+    },
+  });
+});
+
 postRouter.route("/").post(protect, createPost).get(getPosts);
 
-postRouter.route("/:postID").get(getPost);
+postRouter.route("/:postID").get(getPost).put(updatePost);
 module.exports = postRouter;
