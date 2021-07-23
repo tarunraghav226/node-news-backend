@@ -11,13 +11,14 @@ const createPost = catchAsync(async (req, res, next) => {
     title: req.body.title,
     summary: req.body.summary,
     content: req.body.content,
-    coverImageURL: req.file.path,
+    owner: req.user[0].userID,
+    coverImageURL: req.body.coverImageUrl,
   });
   res.status(201).json({
     post,
   });
 });
 
-postRouter.route("/").post(protect, upload.single("cover-image"), createPost);
+postRouter.route("/").post(protect, createPost);
 
 module.exports = postRouter;
