@@ -3,6 +3,7 @@ const upload = require("../../dependencies/imageHandler");
 const catchAsync = require("../../../utils/catchAsync");
 const Post = require("../../../models/post");
 const { protect } = require("../../dependencies/authHandler");
+const AppError = require("../../../utils/appError");
 
 const postRouter = express.Router();
 
@@ -20,7 +21,7 @@ const createPost = catchAsync(async (req, res, next) => {
 });
 
 const getPosts = catchAsync(async (req, res, next) => {
-  const posts = await Post.find();
+  const posts = await Post.find({ is_deleted: false });
   res.status(200).json({
     posts: posts,
   });
@@ -28,7 +29,8 @@ const getPosts = catchAsync(async (req, res, next) => {
 
 const getPost = catchAsync(async (req, res, next) => {
   const { postID } = req.params;
-  const post = await Post.findOne({ postID });
+  const post = await Post.findOne({ postID, is_deleted: false });
+  if (!post) return next(new AppError("Post not found", 404));
   res.status(200).json({ post });
 });
 
