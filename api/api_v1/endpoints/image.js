@@ -14,6 +14,15 @@ const uploadImage = catchAsync(async (req, res, next) => {
   res.status(200).json(image);
 });
 
+const deleteImage = catchAsync(async (req, res, next) => {
+  const { imageID } = req.params;
+  await Image.findOneAndUpdate({ imageID }, { is_deleted: true });
+  res.status(200).json({
+    message: "Image Deleted",
+  });
+});
+
 imageRouter.route("/").post(protect, upload.single("image"), uploadImage);
+imageRouter.route("/:imageID").delete(deleteImage);
 
 module.exports = imageRouter;
