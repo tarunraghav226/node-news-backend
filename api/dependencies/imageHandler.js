@@ -2,10 +2,10 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, "./public");
+    callback(null, "uploads");
   },
   filename: function (req, file, callback) {
-    callback(null, `user/${req.user[0].userID}/${file.filename}`);
+    callback(null, `${file.fieldname}-${file.originalname}`);
   },
 });
 
