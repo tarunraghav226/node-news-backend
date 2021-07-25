@@ -2,6 +2,7 @@ const express = require("express");
 const upload = require("../../dependencies/imageHandler");
 const catchAsync = require("../../../utils/catchAsync");
 const Post = require("../../../models/post");
+const Like = require("../../../models/like");
 const { protect } = require("../../dependencies/authHandler");
 const AppError = require("../../../utils/appError");
 
@@ -63,7 +64,25 @@ const deletePost = catchAsync(async (req, res, next) => {
   });
 });
 
+const likePost = catchAsync(async (req, res, next) => {
+  const { postID } = req.params;
+  const { userID } = req.user[0];
+  const like = await Like.findOne({ postID, userID });
+  let liked = true;
+  if (!like) {
+    await Like.create({
+      postID,
+      userID,
+    });
+  } else {
+    await Like.findOneAndDelete({ postID, userID });
+    liked = false;
+  }
+  res.status(200).json({ liked });
+});
+
 postRouter.route("/").post(protect, createPost).get(getPosts);
 postRouter.route("/:postID").get(getPost).put(updatePost).delete(deletePost);
 
+postRouter.route("/:postID/like").post(protect, likePost);
 module.exports = postRouter;
