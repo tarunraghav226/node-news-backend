@@ -26,6 +26,22 @@ const getComment = catchAsync(async (req, res, next) => {
   res.status(200).json(comment);
 });
 
-commentRouter.route("/:commentID").put(protect, updateComment).get(getComment);
+const deleteComment = catchAsync(async (req, res, next) => {
+  const { userID } = req.user[0];
+  const { commentID } = req.params;
+  const comment = await Comment.findById(commentID);
+
+  if (comment.userID !== userID) {
+    next(new AppError("User not allowed to perform this action"), 400);
+  }
+  await Comment.findByIdAndDelete(commentID);
+  res.sendStatus(200);
+});
+
+commentRouter
+  .route("/:commentID")
+  .put(protect, updateComment)
+  .get(getComment)
+  .delete(protect, deleteComment);
 
 module.exports = commentRouter;
