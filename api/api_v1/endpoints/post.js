@@ -95,6 +95,12 @@ const addComment = catchAsync(async (req, res, next) => {
   });
 });
 
+const getComment = catchAsync(async (req, res, next) => {
+  const { postID } = req.params;
+  const comment = await Comment.findOne({ postID });
+  res.status(200).json(comment);
+});
+
 // post routes
 postRouter.route("/").post(protect, createPost).get(getPosts);
 postRouter.route("/:postID").get(getPost).put(updatePost).delete(deletePost);
@@ -103,6 +109,9 @@ postRouter.route("/:postID").get(getPost).put(updatePost).delete(deletePost);
 postRouter.route("/:postID/like").post(protect, likePost);
 
 // post comment routes
-postRouter.route("/:postID/comment").post(protect, addComment);
+postRouter
+  .route("/:postID/comment")
+  .post(protect, addComment)
+  .get(protect, getComment);
 
 module.exports = postRouter;
