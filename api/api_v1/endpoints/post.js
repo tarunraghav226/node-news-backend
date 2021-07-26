@@ -99,7 +99,6 @@ const getComments = catchAsync(async (req, res, next) => {
   const { postID } = req.params;
   const skip = parseInt(req.query.skip, 10) || 0;
   const limit = parseInt(req.query.limit, 10) || 10;
-  console.log(skip, limit);
   const comment = await Comment.find({ postID })
     .sort("-createdAt")
     .skip(skip)
