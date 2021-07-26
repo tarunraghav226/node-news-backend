@@ -95,9 +95,15 @@ const addComment = catchAsync(async (req, res, next) => {
   });
 });
 
-const getComment = catchAsync(async (req, res, next) => {
+const getComments = catchAsync(async (req, res, next) => {
   const { postID } = req.params;
-  const comment = await Comment.findOne({ postID });
+  const skip = parseInt(req.query.skip, 10) || 0;
+  const limit = parseInt(req.query.limit, 10) || 10;
+  console.log(skip, limit);
+  const comment = await Comment.find({ postID })
+    .sort("-createdAt")
+    .skip(skip)
+    .limit(limit);
   res.status(200).json(comment);
 });
 
@@ -109,9 +115,7 @@ postRouter.route("/:postID").get(getPost).put(updatePost).delete(deletePost);
 postRouter.route("/:postID/like").post(protect, likePost);
 
 // post comment routes
-postRouter
-  .route("/:postID/comment")
-  .post(protect, addComment)
-  .get(protect, getComment);
+postRouter.route("/:postID/comment").post(protect, addComment);
+postRouter.route("/:postID/comments").get(getComments);
 
 module.exports = postRouter;
