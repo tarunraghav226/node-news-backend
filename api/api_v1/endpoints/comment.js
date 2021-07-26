@@ -20,6 +20,12 @@ const updateComment = catchAsync(async (req, res, next) => {
   res.sendStatus(200);
 });
 
-commentRouter.route("/:commentID").put(protect, updateComment);
+const getComment = catchAsync(async (req, res, next) => {
+  const { commentID } = req.params;
+  const comment = await Comment.findById(commentID);
+  res.status(200).json(comment);
+});
+
+commentRouter.route("/:commentID").put(protect, updateComment).get(getComment);
 
 module.exports = commentRouter;
