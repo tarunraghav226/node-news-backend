@@ -3,6 +3,7 @@ const upload = require("../../dependencies/imageHandler");
 const catchAsync = require("../../../utils/catchAsync");
 const Post = require("../../../models/post");
 const Like = require("../../../models/like");
+const Comment = require("../../../models/comment");
 const { protect } = require("../../dependencies/authHandler");
 const AppError = require("../../../utils/appError");
 
@@ -81,8 +82,27 @@ const likePost = catchAsync(async (req, res, next) => {
   res.status(200).json({ liked });
 });
 
+const addComment = catchAsync(async (req, res, next) => {
+  const { postID } = req.params;
+  const { userID } = req.user[0];
+  const comment = await Comment.create({
+    postID,
+    userID,
+    comment: req.body.comment,
+  });
+  res.status(201).json({
+    comment,
+  });
+});
+
+// post routes
 postRouter.route("/").post(protect, createPost).get(getPosts);
 postRouter.route("/:postID").get(getPost).put(updatePost).delete(deletePost);
 
+// post like routes
 postRouter.route("/:postID/like").post(protect, likePost);
+
+// post comment routes
+postRouter.route("/:postID/comment").post(protect, addComment);
+
 module.exports = postRouter;
